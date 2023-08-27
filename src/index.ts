@@ -1,11 +1,11 @@
-const express = require('express')
-const app = express()
-const port = 3000
+import * as express from "express";
+import * as morgan from "morgan";
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+import { user } from "./routes";
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+const app = express();
+
+app.use(morgan("tiny"));
+app.use("/user", user);
+
+export default app;

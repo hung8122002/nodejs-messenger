@@ -1,7 +1,8 @@
-import app from ".";
+import * as http from "http";
+import app from "./";
 
-const PORT = 8080;
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port: ${PORT}`);
+const PORT = 3000;
+const server = http.createServer(app);
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
