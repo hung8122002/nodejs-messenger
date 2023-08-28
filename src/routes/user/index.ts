@@ -7,8 +7,13 @@ route.get("/", (req, res) => {
 });
 
 route.post("/", (req, res) => {
+  const user = {
+    userName: req.body.userName,
+    password: req.body.password,
+  };
   res.status(200).json({
     message: "Handling post request",
+    user,
   });
 });
 
