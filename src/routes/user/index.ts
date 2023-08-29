@@ -1,4 +1,8 @@
 import * as express from "express";
+import mongoose from "mongoose";
+
+import { User } from "../../model";
+
 const route = express.Router();
 route.get("/", (req, res) => {
   res.status(200).json({
@@ -7,10 +11,16 @@ route.get("/", (req, res) => {
 });
 
 route.post("/", (req, res) => {
-  const user = {
-    userName: req.body.userName,
+  // const user = {
+  //   userName: req.body.userName,
+  //   password: req.body.password,
+  // };
+  const user = new User({
+    _id: new mongoose.Types.ObjectId(),
+    username: req.body.username,
     password: req.body.password,
-  };
+  });
+  user.save();
   res.status(200).json({
     message: "Handling post request",
     user,

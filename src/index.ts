@@ -11,7 +11,7 @@ interface CustomError extends Error {
   status: number;
 }
 
-app.use(cors);
+app.use(cors());
 app.use(morgan("tiny"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
