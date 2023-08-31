@@ -1,8 +1,12 @@
 import * as express from "express";
 import mongoose from "mongoose";
 import * as multer from "multer";
+import * as bcrypt from "bcrypt";
+import * as jsonwebtoken from "jsonwebtoken";
+import "dotenv/config";
 
 import { User } from "../../model";
+import user from "model/user";
 
 const route = express.Router();
 var storage = multer.diskStorage({
@@ -10,7 +14,7 @@ var storage = multer.diskStorage({
     cb(null, "./uploads/");
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    cb(null, new Date().toISOString + file.originalname);
   },
 });
 
@@ -31,7 +35,6 @@ var upload = multer({
 
 route.get("/", (req, res) => {
   User.find()
-    .select("username password")
     .skip(Number(req.query.skip))
     .limit(Number(req.query.limit))
     .sort("-updateAt")
@@ -42,7 +45,7 @@ route.get("/", (req, res) => {
         limit: req.query.limit,
         record: users.length,
         users: users.map((user) => ({
-          username: user.username,
+          email: user.email,
           subname: user.subname,
           firstname: user.firstname,
           detail: `http://localhost:3000/user/${user._id}`,
@@ -54,25 +57,45 @@ route.get("/", (req, res) => {
     });
 });
 
-route.post("/", (req, res) => {
-  const user = new User({
-    _id: new mongoose.Types.ObjectId(),
-    username: req.body.username,
-    password: req.body.password,
-  });
-  user
-    .save()
-    .then(() => {
-      res.status(200).json({
-        message: "Create new user successfully",
-        user,
+route.post("/signup", (req, res) => {
+  User.find({ email: req.body.email }).then((user) => {
+    if (user.length) {
+      return res.status(409).json({ message: "Email already exists" });
+    } else {
+      bcrypt.hash(req.body.password, 10, (err, hash) => {
+        if (err) {
+          res.status(500).json({ message: err.message });
+        } else {
+          const user = new User({
+            _id: new mongoose.Types.ObjectId(),
+            email: req.body.email,
+            password: hash,
+            firstname: req.body.firstname,
+            subname: req.body.subname,
+          });
+          user
+            .save()
+            .then(() => {
+              res.status(200).json({
+                message: "Create new user successfully",
+                user: {
+                  email: user.email,
+                  subname: user.subname,
+                  firstname: user.firstname,
+                  detail: `http://localhost:3000/user/${user._id}`,
+                },
+              });
+            })
+            .catch((err) => {
+              res.status(500).json({
+                message: "Create new user failed",
+                error: err.message,
+              });
+            });
+        }
       });
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .json({ message: "Create new user failed", error: err.message });
-    });
+    }
+  });
 });
 
 route.delete("/:userId", (req, res) => {
@@ -108,6 +131,25 @@ route.get("/:userId", (req, res) => {
     .catch((err) => {
       res.status(500).json({ error: err.message });
     });
+});
+
+route.post("/login", (req, res) => {
+  User.findOne({ email: req.body.email })
+    .then((user) => {
+      if (user) {
+        if (bcrypt.compareSync(req.body.password, user.password)) {
+          const token = jsonwebtoken.sign(
+            {
+              id: user._id,
+            },
+            process.env.JWT_KEY
+          );
+          return res.status(200).json({ message: "Auth successful", token });
+        }
+      }
+      res.status(401).json({ message: "Auth failed" });
+    })
+    .catch((err) => res.status(500).json({ error: err.message }));
 });
 
 export default route;

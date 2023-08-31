@@ -1,5 +1,8 @@
 {
     "execMap": {
         "ts": "node --require ts-node/register"
+    },
+    "env": {
+        "JWT_KEY": "my secret key"
     }
 }
