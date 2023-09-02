@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 async function connect() {
   try {
-    await mongoose.connect("mongodb://localhost:27017/messenger");
+    await mongoose.connect(process.env.DB_CONNECT);
     console.log("connect successfully");
   } catch (error) {
     console.log("Error connecting");

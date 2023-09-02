@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 import * as bcrypt from "bcrypt";
 import * as jsonwebtoken from "jsonwebtoken";
+import { Request, Response } from "express";
 
-import { User } from "../../model";
-const user_paging = (req, res) => {
+import { User } from "~/model";
+const user_paging = (req: Request, res: Response) => {
   User.find()
     .skip(Number(req.query.skip))
     .limit(Number(req.query.limit))
@@ -27,7 +28,7 @@ const user_paging = (req, res) => {
     });
 };
 
-const user_login = (req, res) => {
+const user_login = (req: Request, res: Response) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (user) {
@@ -46,7 +47,7 @@ const user_login = (req, res) => {
     .catch((err) => res.status(500).json({ error: err.message }));
 };
 
-const user_signup = (req, res) => {
+const user_signup = (req: Request, res: Response) => {
   User.find({ email: req.body.email }).then((user) => {
     if (user.length) {
       return res.status(409).json({ message: "Email already exists" });
@@ -87,7 +88,7 @@ const user_signup = (req, res) => {
   });
 };
 
-const user_delete = (req, res) => {
+const user_delete = (req: Request, res: Response) => {
   User.deleteOne({ _id: req.params.userId })
     .then((result) => {
       res.status(200).json(result.deletedCount);
@@ -97,7 +98,7 @@ const user_delete = (req, res) => {
     });
 };
 
-const user_update_by_id = (req, res) => {
+const user_update_by_id = (req: Request, res: Response) => {
   console.log(req.file.path);
   let updateItem = {};
   for (const propName in req.body) {
@@ -112,7 +113,7 @@ const user_update_by_id = (req, res) => {
     });
 };
 
-const user_get_by_id = (req, res) => {
+const user_get_by_id = (req: Request, res: Response) => {
   User.findById(req.params.userId)
     .then((user) => {
       res.status(200).json(user);
@@ -121,6 +122,7 @@ const user_get_by_id = (req, res) => {
       res.status(500).json({ error: err.message });
     });
 };
+
 export {
   user_paging,
   user_login,

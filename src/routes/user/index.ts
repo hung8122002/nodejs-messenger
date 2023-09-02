@@ -1,7 +1,7 @@
 import * as express from "express";
 
-import { checkAuth, upload } from "../../middleware";
-import { userController } from "../../controller";
+import { checkAuth, upload } from "~/middleware";
+import { userController } from "~/controller";
 
 const route = express.Router();
 route.get("/", userController.user_paging);
