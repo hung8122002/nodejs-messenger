@@ -3,6 +3,7 @@ import * as morgan from "morgan";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import "dotenv/config";
+import { Request, Response, NextFunction } from "express";
 
 import { user } from "./routes";
 
@@ -24,12 +25,14 @@ app.use((req, res, next) => {
   next(error);
 });
 
-app.use((error, req, res, next) => {
-  res.status(error.status || 500);
-  res.json({
-    status: error.status,
-    message: error.message,
-  });
-});
+app.use(
+  (error: CustomError, req: Request, res: Response, next: NextFunction) => {
+    res.status(error.status || 500);
+    res.json({
+      status: error.status,
+      message: error.message,
+    });
+  }
+);
 
 export default app;
