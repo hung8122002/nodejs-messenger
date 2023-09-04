@@ -4,6 +4,7 @@ import { checkAuth, upload } from "~/middleware";
 import { userController } from "~/controller";
 
 const route = express.Router();
+
 route.get("/", userController.user_paging);
 
 route.post("/signup", userController.user_signup);
