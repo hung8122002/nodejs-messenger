@@ -17,9 +17,9 @@ const user_paging = (req: Request, res: Response) => {
         record: users.length,
         users: users.map((user) => ({
           email: user.email,
-          subname: user.subname,
+          subname: user.surname,
           firstname: user.firstname,
-          detail: `http://localhost:3000/user/${user._id}`,
+          detail: `http://localhost:${process.env.PORT}/user/${user._id}`,
         })),
       });
     })
@@ -61,7 +61,7 @@ const user_signup = (req: Request, res: Response) => {
             email: req.body.email,
             password: hash,
             firstname: req.body.firstname,
-            subname: req.body.subname,
+            surname: req.body.surname,
           });
           user
             .save()
@@ -70,9 +70,9 @@ const user_signup = (req: Request, res: Response) => {
                 message: "Create new user successfully",
                 user: {
                   email: user.email,
-                  subname: user.subname,
+                  subname: user.surname,
                   firstname: user.firstname,
-                  detail: `http://localhost:3000/user/${user._id}`,
+                  detail: `http://localhost:${process.env.PORT}/user/${user._id}`,
                 },
               });
             })
