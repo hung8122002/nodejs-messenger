@@ -19,7 +19,7 @@ const user_paging = (req: Request, res: Response) => {
           email: user.email,
           subname: user.surname,
           firstname: user.firstname,
-          detail: `http://localhost:${process.env.PORT}/user/${user._id}`,
+          detail: `http://localhost:${process.env.PORT}/users/${user._id}`,
         })),
       });
     })
@@ -72,7 +72,7 @@ const user_signup = (req: Request, res: Response) => {
                   email: user.email,
                   subname: user.surname,
                   firstname: user.firstname,
-                  detail: `http://localhost:${process.env.PORT}/user/${user._id}`,
+                  detail: `http://localhost:${process.env.PORT}/users/${user._id}`,
                 },
               });
             })

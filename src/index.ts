@@ -15,7 +15,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(morgan("tiny"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use("/user", user);
+app.use("/users", user);
 app.use((req: Request, res: Response, next) => {
   const error: CustomError = new Error("Not Found") as CustomError;
   error.status = 404;
